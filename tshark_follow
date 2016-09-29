@@ -1,0 +1,12 @@
+#! /usr/bin/env bash
+infile=$1
+outfile=$2
+ssl=$3
+ext=txt
+#for stream in $(tshark -nlr $infile -o ssl.keylog_file:$ssl -Y tcp.flags.syn==1 -T fields -e tcp.stream | sort -n | uniq | sed 's/\r//')
+for stream in $(tshark -nlr $infile -o ssl.keylog_file:$ssl -Y ssl.handshake.type==1 -T fields -e tcp.stream | sort -n | uniq | sed 's/\r//')
+do
+    echo "Processing stream $stream: ${outfile}_${stream}.${ext}"
+    #tshark -nlr $infile -o ssl.keylog_file:$ssl -qz "follow,ssl,raw,$stream" | tail -n +7 | sed 's/^\s\+//g' | xxd -r -p > ${outfile}_${stream}.${ext}
+    tshark -nlr $infile -o ssl.keylog_file:$ssl -qz "follow,ssl,hex,$stream" > ${outfile}_${stream}.${ext}
+done

@@ -1,0 +1,35 @@
+#! /usr/bin/env bash
+# USER_AGENT should not contain '
+USER_AGENT='Mozilla/5.0 (Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko'
+DOCKER_NAME="hild1:seleniumdump"
+
+
+PRE_DUMPS="$(find ./dumps)"
+TIME_START="$(date +%F-%H-%M-%S-%Z-%s)"
+
+echo "Booting"
+
+PORTS="-p 4444:4444"
+
+CONT_UD=$(sudo docker run -d \
+  ${PORTS} -v /dev/shm:/dev/shm \
+  -v $PWD/dumps:/data ${DOCKER_NAME} \
+  /opt/bin/selenium_and_tcpdump.sh "$TIME_START")
+
+sleep 5s
+
+./open_url.py "$1" "$USER_AGENT" "$TIME_START"
+
+sleep 2s
+
+sudo docker stop "${CONT_UD}" 1&>/dev/null
+sudo docker rm "${CONT_UD}" 1&>/dev/null
+
+POST_DUMPS="$(find ./dumps)"
+NEW_FILES="$(diff --changed-group-format='%>' --unchanged-group-format='' <(echo "${PRE_DUMPS}") <(echo "${POST_DUMPS}"))"
+PCAP="$(echo "$NEW_FILES" | grep pcap)"
+SSL_KEYS="$(echo "$NEW_FILES" | grep ssl-key-log)"
+echo "New files: "
+echo "$NEW_FILES"
+echo "Wireshark oneliner: "
+echo wireshark $PCAP -o ssl.keylog_file:$SSL_KEYS
