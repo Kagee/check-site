@@ -19,6 +19,9 @@ chromeOptions.arguments.append("ssl-key-log-file=/data/ssl-key-log-%s.log" % (ti
 chromeOptions.arguments.append("start-maximized")
 chromeOptions.arguments.append("disable-http2")
 driver = webdriver.Remote(command_executor='http://127.0.0.1:4444/wd/hub', desired_capabilities = chromeOptions.to_capabilities())
+print "Visiting %s" % (url,)
 driver.get(url)
+print "Sleeping 10 seconds"
 time.sleep(10)
+print "Closing driver"
 driver.close()
