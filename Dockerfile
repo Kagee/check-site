@@ -5,7 +5,7 @@ VOLUME  [ "/data" ]
 
 RUN apt-get update &&  apt-get -y -q install tcpdump
 
-RUN wget https://github.com/Yelp/dumb-init/releases/download/v1.1.3/dumb-init_1.1.3_amd64.deb
+RUN wget https://github.com/Yelp/dumb-init/releases/download/v1.2.0/dumb-init_1.2.0_amd64.deb
 RUN dpkg -i dumb-init_*.deb
 
 COPY selenium_and_tcpdump.sh /opt/bin/selenium_and_tcpdump.sh
