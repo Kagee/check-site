@@ -1,0 +1,1 @@
+/tmp/sslsplit-0.5.0/sslsplit -D -l /data/sconn.log -j /data -k ca.key -c ca.crt -S /data http 0.0.0.0 10080 https 0.0.0.0 10443

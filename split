@@ -1,0 +1,42 @@
+#! /usr/bin/env bash
+# USER_AGENT should not contain '
+#USER_AGENT='Mozilla/5.0 (Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko'
+DOCKER_NAME="hild1:seleniumdump"
+
+#if [ $# -eq 0 ]; then
+#    echo "$0: Required argument URL missing"
+#    exit 1
+#fi
+
+
+#PRE_DUMPS="$(find ./dumps)"
+#TIME_START="$(date +%F-%H-%M-%S-%Z-%s)"
+
+echo "Booting"
+
+PORTS="-p 4444:4444 -p 5900-5910:5900-5910"
+
+sudo docker run -t -i --cap-add=NET_ADMIN --privileged --rm \
+  ${PORTS} -v /dev/shm:/dev/shm \
+  -v $PWD/dumps:/data ${DOCKER_NAME} \
+  /bin/bash
+
+#sleep 5s
+#echo "Visiting '$1'"
+#./open_url.py "$1" "$USER_AGENT" "$TIME_START"
+
+#sleep 2s
+
+#echo "Stopping Docker"
+#sudo docker stop "${CONT_UD}" 1&>/dev/null
+#sudo docker rm "${CONT_UD}" 1&>/dev/null
+
+#echo "Finding dumps"
+#POST_DUMPS="$(find ./dumps)"
+#NEW_FILES="$(diff --changed-group-format='%>' --unchanged-group-format='' <(echo "${PRE_DUMPS}") <(echo "${POST_DUMPS}"))"
+#PCAP="$(echo "$NEW_FILES" | grep pcap)"
+#SSL_KEYS="$(echo "$NEW_FILES" | grep ssl-key-log)"
+#echo "New files: "
+#echo "$NEW_FILES"
+#echo "Wireshark oneliner: "
+#echo wireshark $PCAP -o ssl.keylog_file:$SSL_KEYS

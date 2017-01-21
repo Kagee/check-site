@@ -3,16 +3,36 @@ MAINTAINER Anders Einar Hilden <hildenae@gmail.com>
 
 VOLUME  [ "/data" ]
 
-RUN apt-get update &&  apt-get -y -q install tcpdump
+RUN apt-get update &&  apt-get -y -q install tcpdump wget build-essential iptables pkg-config
 
 RUN wget https://github.com/Yelp/dumb-init/releases/download/v1.2.0/dumb-init_1.2.0_amd64.deb
 RUN dpkg -i dumb-init_*.deb
 
+WORKDIR     /tmp
+RUN         wget  http://mirror.roe.ch/rel/sslsplit/sslsplit-0.5.0.tar.bz2
+RUN         tar jxvf sslsplit-0.5.0.tar.bz2
+WORKDIR     /tmp/sslsplit-0.5.0
+RUN         apt-get -y install libssl-dev libevent-dev
+RUN         make
+RUN         make install
+RUN         mkdir /tmp/sslsplit
+
+COPY ca.key /tmp/sslsplit-0.5.0/ca.key
+COPY ca.crt /tmp/sslsplit-0.5.0/ca.crt
+
+#RUN         apt-get -y purge wget build-essential
+#RUN         apt-get -y autoremove
+
+
+COPY iptables.sh /opt/bin/iptables.sh
+RUN chmod +x /opt/bin/iptables.sh
+
+
 COPY selenium_and_tcpdump.sh /opt/bin/selenium_and_tcpdump.sh
 RUN chmod +x /opt/bin/selenium_and_tcpdump.sh
 
-# RUN sed -e 's#/bin/bash#/usr/bin/dumb-init /bin/bash#g' -i /opt/bin/entry_point.sh
 
+# RUN sed -e 's#/bin/bash#/usr/bin/dumb-init /bin/bash#g' -i /opt/bin/entry_point.sh
 
 #/usr/sbin/tcpdump
 # docker run -d -p 4444:4444 -p 5900:5900 -v /dev/shm:/dev/shm <name>/<tag>
