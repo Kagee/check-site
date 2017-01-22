@@ -5,14 +5,16 @@ VOLUME  [ "/data" ]
 
 RUN apt-get update &&  apt-get -y -q install tcpdump
 
-RUN wget https://github.com/Yelp/dumb-init/releases/download/v1.2.0/dumb-init_1.2.0_amd64.deb
+RUN wget -q https://github.com/Yelp/dumb-init/releases/download/v1.2.0/dumb-init_1.2.0_amd64.deb
 RUN dpkg -i dumb-init_*.deb
 
 COPY selenium_and_tcpdump.sh /opt/bin/selenium_and_tcpdump.sh
 RUN chmod +x /opt/bin/selenium_and_tcpdump.sh
 
 # RUN sed -e 's#/bin/bash#/usr/bin/dumb-init /bin/bash#g' -i /opt/bin/entry_point.sh
-
+WORKDIR /tmp
+RUN wget -q https://github.com/mitmproxy/mitmproxy/releases/download/v1.0.2/mitmproxy-1.0.2-linux.tar.gz
+RUN tar vxf mitmproxy-1.0.2-linux.tar.gz
 
 #/usr/sbin/tcpdump
 # docker run -d -p 4444:4444 -p 5900:5900 -v /dev/shm:/dev/shm <name>/<tag>
