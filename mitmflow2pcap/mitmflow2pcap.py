@@ -76,7 +76,17 @@ with open(sys.argv[1], "rb") as logfile:
             #sys.stdout.flush()
             #sys.stdout.buffer.write(r.raw_content)
             #sys.stdout.flush()
-       
+
+            # The order of TCP flags as we fake them
+            # C->S SYN
+            # S->C SYN ACK
+            # C->S ACK
+            # C->S PSH ACK (request)
+            # S->C PSH ACK (response)
+            # C->S FIN ACK
+            # S->C FIN ACK
+            # C->S ACK
+
             # Hankshake 
             #SYN (CS)
             pkts.append(EtherIP(client_ip, server_ip)/TCP(sport=client_port,dport=server_port,flags='S', seq=cseq))
