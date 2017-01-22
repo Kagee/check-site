@@ -1,3 +1,34 @@
+/opt/bin/entry_point.sh &
+./mitmdump -w /data/outfile --port 8080 --socks --bind-address 127.0.0.1
+/root/.mitmproxy << certs
+
+https://get.adobe.com/flashplayer/?no_redirect => 
+tar vxf flash_player_ppapi_linux.x86_64.tar.gz
+
+# Add mitmproxy-cert to seleniumuser storage
+certutil -d sql:/home/seluser/.pki/nssdb -A -t TC -n "mitmproxy" -i ~/.mitmproxy/mitmproxy-ca.pem 
+
+xdpyinfo -display :99.0 | grep dimensions
+
+ffmpeg -f x11grab -framerate 25 -video_size cif -i :99.0 /data/out.mpg
+ffmpeg -f x11grab -framerate 25 -video_size $(xdpyinfo -display :99.0 | grep dimensions | awk '{ print $2}') -i :99.0 /data/out.mpg
+
+ffmpeg -f x11grab -framerate 25 -video_size $(xdpyinfo -display :99.0 | grep dimensions | awk '{ print $2}') -i :99.0 -c:v libx264 -c:v libx264 /data/out.mkv
+
+function scroll(to) {
+  window.scrollTo(0, to);
+  to = to + window.innerHeight;
+  if (to < document.body.scrollHeight) {
+    setTimeout(function(){ scroll(to) }, 3000);
+  }
+}
+
+to = 0;
+setTimeout(function(){ scroll(to) }, 3000);
+
+ffmpeg record window to x264 mkv
+ffmpeg -f x11grab -framerate 25 -video_size $(xdpyinfo -display :99.0 | grep dimensions | awk '{ print $2}') -i :99.0 -c:v libx264 -c:v libx264 /data/out.mkv
+
 IE 11 User Agents
 https://blogs.msdn.microsoft.com/ieinternals/2013/09/21/internet-explorer-11s-many-user-agent-strings/
 

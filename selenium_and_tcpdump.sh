@@ -10,5 +10,6 @@ INTERFACE="$(tcpdump --list-interfaces | grep eth | cut -d'.' -f2 | cut -d' ' -f
 NETWORK="$(ip route | grep 'scope link' | cut -d' ' -f 1)"
 
 tcpdump -w /data/dump-${TIME_START}.pcap -i ${INTERFACE} -n "not (src net ${NETWORK} and dst net ${NETWORK}) and not (src net 127.0.0.0/8 and dst net 127.0.0.0/8) and not multicast" 1> /data/dump-${TIME_START}.log 2>/data/dump-${TIME_START}.log
+#./mitmdump --noapp --socks --port 8080 --bind-address=127.0.0.1 --wfile /data/outfile &
 #sync
 #echo "ENTRY POINT FISHED" >> /data/dump-${TIME_START}.log
